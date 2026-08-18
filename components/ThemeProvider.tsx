@@ -20,10 +20,11 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() =>
-    typeof document !== "undefined" &&
-    document.documentElement.classList.contains("dark")
-      ? "dark"
-      : "light",
+    typeof document !== "undefined"
+      ? document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "light"
+      : "dark",
   );
 
   const applyTheme = useCallback((next: Theme) => {
