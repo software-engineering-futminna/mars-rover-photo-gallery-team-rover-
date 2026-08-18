@@ -29,7 +29,7 @@ export default function RoverSelector({
       <select
         id="rover-select"
         value={value}
-        disabled={disabled}
+        disabled={!!disabled}
         onChange={(e) => onChange(e.target.value as RoverName)}
         className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
       >

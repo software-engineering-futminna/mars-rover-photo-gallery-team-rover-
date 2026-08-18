@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, FormEvent } from "react";
+import { useState, useCallback } from "react";
 import SearchBar from "./SearchBar";
 import ImageGrid from "./ImageGrid";
 import type { NasaImageItem, RoverFilter } from "@/lib/types";
@@ -59,7 +59,7 @@ export default function SearchView() {
         onSearch={handleSearch}
         initialQ={searchParams.q}
         initialRover={searchParams.rover}
-        disabled={loading}
+        disabled={!!loading}
       />
 
       <ImageGrid
@@ -78,7 +78,7 @@ export default function SearchView() {
             {results.currentPage > 1 && (
               <button
                 onClick={() => handlePageChange(results.currentPage - 1)}
-                disabled={loading}
+                disabled={!!loading}
                 className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-900 shadow-sm hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
               >
                 Previous
@@ -92,7 +92,7 @@ export default function SearchView() {
             {results.nextPage && (
               <button
                 onClick={() => handlePageChange(results.nextPage!)}
-                disabled={loading}
+                disabled={!!loading}
                 className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-900 shadow-sm hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
               >
                 Next

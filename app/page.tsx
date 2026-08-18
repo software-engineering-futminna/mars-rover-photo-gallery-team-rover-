@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import RoverSelector from "@/components/RoverSelector";
 import SearchTabs from "@/components/SearchTabs";
 import SearchView from "@/components/SearchView";
-import type { Manifest, RoverName } from "@/lib/types";
+import ImageGrid from "@/components/ImageGrid";
+import type { RoverName, RoverOverviewResponse, NasaImageItem } from "@/lib/types";
 
 const ROVER_LABELS: Record<RoverName, string> = {
   curiosity: "Curiosity",
@@ -13,7 +14,7 @@ const ROVER_LABELS: Record<RoverName, string> = {
 
 export default function Home() {
   const [rover, setRover] = useState<RoverName>("curiosity");
-  const [manifest, setManifest] = useState<Manifest | null>(null);
+  const [overview, setOverview] = useState<RoverOverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +26,7 @@ export default function Home() {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return res.json();
       })
-      .then((data: Manifest) => setManifest(data))
+      .then((data: RoverOverviewResponse) => setOverview(data))
       .catch((err: unknown) => {
         if (err instanceof DOMException && err.name === "AbortError") return;
         setError("Could not load rover information.");
@@ -41,48 +42,64 @@ export default function Home() {
     setError(null);
   };
 
+  const overviewItems: NasaImageItem[] = overview
+    ? overview.items.map((img) => ({
+        data: [
+          {
+            nasa_id: img.nasa_id,
+            title: img.title,
+            date_created: img.date_created,
+            center: img.center,
+            media_type: "image",
+          },
+        ],
+        links: img.thumbnail ? [{ href: img.thumbnail, rel: "preview", render: "image" }] : undefined,
+      }))
+    : [];
+
   const manifestContent = (
     <>
       <section className="mb-6 flex flex-wrap items-end gap-4">
         <RoverSelector
           value={rover}
           onChange={handleRoverChange}
-          disabled={loading}
+          disabled={!!loading}
         />
       </section>
 
-      <section className="rounded-lg border border-zinc-200 bg-white p-4 text-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <section className="mb-6 rounded-lg border border-zinc-200 bg-white p-4 text-sm dark:border-zinc-800 dark:bg-zinc-900">
         {loading && <p className="text-zinc-500">Loading rover data…</p>}
         {error && <p className="text-red-600">{error}</p>}
-        {manifest && !loading && (
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
+        {overview && !loading && (
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3">
             <div>
               <dt className="font-medium text-zinc-500">Rover</dt>
               <dd className="text-zinc-900 dark:text-zinc-100">
-                {ROVER_LABELS[manifest.rover]}
+                {ROVER_LABELS[overview.rover]}
               </dd>
             </div>
             <div>
-              <dt className="font-medium text-zinc-500">Status</dt>
-              <dd className="text-zinc-900 dark:text-zinc-100 capitalize">
-                {manifest.status}
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-zinc-500">Max sol</dt>
+              <dt className="font-medium text-zinc-500">Total images</dt>
               <dd className="text-zinc-900 dark:text-zinc-100">
-                {manifest.maxSol.toLocaleString()}
+                {overview.totalImages.toLocaleString()}
               </dd>
             </div>
             <div>
-              <dt className="font-medium text-zinc-500">Cameras</dt>
-              <dd className="text-zinc-900 dark:text-zinc-100">
-                {manifest.cameras.length}
-              </dd>
+              <dt className="font-medium text-zinc-500">Source</dt>
+              <dd className="text-zinc-900 dark:text-zinc-100">NASA Image Library</dd>
             </div>
           </dl>
         )}
       </section>
+
+      {overview && !loading && (
+        <>
+          <h2 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            Recent images
+          </h2>
+          <ImageGrid images={overviewItems} loading={loading} error={error} />
+        </>
+      )}
     </>
   );
 
