@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import ImageGrid from "./ImageGrid";
 import type { GalleryImage, RoverFilter } from "@/lib/types";
@@ -52,6 +52,13 @@ export default function SearchView() {
   const handlePageChange = useCallback((page: number) => {
     fetchImages({ ...searchParams, page });
   }, [fetchImages, searchParams]);
+
+  // Dump whatever on first load so the gallery shows something before any search.
+  /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
+  useEffect(() => {
+    fetchImages({ q: "", rover: "curiosity", page: 1 });
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
 
   return (
     <div>

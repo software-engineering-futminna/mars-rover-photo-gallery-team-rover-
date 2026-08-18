@@ -18,23 +18,6 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-/**
- * Runs before first paint to apply the stored/preferred theme and avoid a
- * flash of the wrong theme. Inlined as a string so it executes immediately.
- */
-const PREPAINT_SCRIPT = `
-(function () {
-  try {
-    var stored = localStorage.getItem("theme");
-    var theme = stored === "light" || stored === "dark"
-      ? stored
-      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    document.documentElement.style.colorScheme = theme;
-  } catch (e) {}
-})();
-`;
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() =>
     typeof document !== "undefined" &&
@@ -70,10 +53,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <ThemeContext.Provider value={value}>
-      <script dangerouslySetInnerHTML={{ __html: PREPAINT_SCRIPT }} />
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 }
 
