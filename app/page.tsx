@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import RoverSelector from "@/components/RoverSelector";
+import SearchTabs from "@/components/SearchTabs";
+import SearchView from "@/components/SearchView";
 import type { Manifest, RoverName } from "@/lib/types";
 
 const ROVER_LABELS: Record<RoverName, string> = {
@@ -39,17 +41,8 @@ export default function Home() {
     setError(null);
   };
 
-  return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-8">
-      <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Mars Rover Photo Gallery
-        </h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Browse photographs captured by NASA&rsquo;s Mars rovers.
-        </p>
-      </header>
-
+  const manifestContent = (
+    <>
       <section className="mb-6 flex flex-wrap items-end gap-4">
         <RoverSelector
           value={rover}
@@ -90,6 +83,24 @@ export default function Home() {
           </dl>
         )}
       </section>
+    </>
+  );
+
+  return (
+    <main className="mx-auto w-full max-w-5xl px-4 py-8">
+      <header className="mb-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Mars Rover Photo Gallery
+        </h1>
+        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          Browse photographs captured by NASA&rsquo;s Mars rovers.
+        </p>
+      </header>
+
+      <SearchTabs
+        manifestContent={manifestContent}
+        searchContent={<SearchView />}
+      />
     </main>
   );
 }
