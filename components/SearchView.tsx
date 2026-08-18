@@ -3,10 +3,10 @@
 import { useState, useCallback } from "react";
 import SearchBar from "./SearchBar";
 import ImageGrid from "./ImageGrid";
-import type { NasaImageItem, RoverFilter } from "@/lib/types";
+import type { GalleryImage, RoverFilter } from "@/lib/types";
 
 interface SearchResult {
-  items: NasaImageItem[];
+  items: GalleryImage[];
   totalHits: number;
   currentPage: number;
   pageSize: number;

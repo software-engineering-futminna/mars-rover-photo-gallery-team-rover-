@@ -5,7 +5,7 @@ import RoverSelector from "@/components/RoverSelector";
 import SearchTabs from "@/components/SearchTabs";
 import SearchView from "@/components/SearchView";
 import ImageGrid from "@/components/ImageGrid";
-import type { RoverName, RoverOverviewResponse, NasaImageItem } from "@/lib/types";
+import type { RoverName, RoverOverviewResponse, GalleryImage } from "@/lib/types";
 
 const ROVER_LABELS: Record<RoverName, string> = {
   curiosity: "Curiosity",
@@ -46,18 +46,14 @@ export default function Home() {
     setError(null);
   };
 
-  const overviewItems: NasaImageItem[] = overview
+  const overviewItems: GalleryImage[] = overview
     ? overview.items.map((img) => ({
-        data: [
-          {
-            nasa_id: img.nasa_id,
-            title: img.title,
-            date_created: img.date_created,
-            center: img.center,
-            media_type: "image",
-          },
-        ],
-        links: img.thumbnail ? [{ href: img.thumbnail, rel: "preview", render: "image" }] : undefined,
+        nasa_id: img.nasa_id,
+        title: img.title,
+        date_created: img.date_created,
+        center: img.center,
+        media_type: "image",
+        thumbnail: img.thumbnail,
       }))
     : [];
 

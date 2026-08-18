@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { searchImages, buildRoverQuery } from "@/lib/nasa-images";
+import { searchImages, buildRoverQuery, toGalleryImage } from "@/lib/nasa-images";
 import type { SearchParams, RoverFilter } from "@/lib/types";
 
 export const revalidate = 3600;
@@ -30,20 +30,9 @@ export async function GET(request: NextRequest) {
   try {
     const response = await searchImages(params);
     
-    const items = response.collection.items.map((item) => {
-      const data = item.data[0];
-      const thumbnail = item.links?.find((l) => l.rel === "preview" && l.render === "image")?.href ?? null;
-      return {
-        nasa_id: data.nasa_id,
-        title: data.title,
-        description: data.description,
-        date_created: data.date_created,
-        center: data.center,
-        photographer: data.photographer,
-        keywords: data.keywords,
-        media_type: data.media_type,
-        thumbnail,
-      };
+    const items = response.collection.items.flatMap((item) => {
+      const normalized = toGalleryImage(item);
+      return normalized ? [normalized] : [];
     });
 
     const nextLink = response.collection.links?.find((l) => l.rel === "next");

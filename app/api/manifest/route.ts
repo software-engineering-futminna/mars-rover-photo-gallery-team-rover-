@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getRoverOverview } from "@/lib/nasa-images";
+import { getRoverOverview, toGalleryImage } from "@/lib/nasa-images";
 import { ROVERS, type RoverName } from "@/lib/types";
 
 export const revalidate = 3600;
@@ -15,16 +15,9 @@ export async function GET(request: NextRequest) {
 
   try {
     const overview = await getRoverOverview(rover);
-    const items = overview.items.map((item) => {
-      const data = item.data[0];
-      const thumbnail = item.links?.find((l) => l.rel === "preview" && l.render === "image")?.href ?? null;
-      return {
-        nasa_id: data.nasa_id,
-        title: data.title,
-        date_created: data.date_created,
-        center: data.center,
-        thumbnail,
-      };
+    const items = overview.items.flatMap((item) => {
+      const normalized = toGalleryImage(item);
+      return normalized ? [normalized] : [];
     });
 
     return NextResponse.json({

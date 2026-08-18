@@ -61,6 +61,18 @@ export interface NasaImageItem {
   links?: NasaImageLink[];
 }
 
+export interface GalleryImage {
+  nasa_id: string;
+  title: string;
+  description?: string;
+  date_created: string;
+  center?: string;
+  photographer?: string;
+  keywords?: string[];
+  media_type: MediaType;
+  thumbnail: string | null;
+}
+
 export interface NasaSearchResponse {
   collection: {
     version: "1.0";
