@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getImageDetail } from "@/lib/nasa-images";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export const revalidate = 3600;
 
@@ -37,16 +38,19 @@ export default async function ImageDetailPage({
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-      >
-        &larr; Back to gallery
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          href="/"
+          className="text-sm text-zinc-500 transition-opacity hover:opacity-60 dark:text-zinc-400"
+        >
+          &larr; Back
+        </Link>
+        <ThemeToggle />
+      </div>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="overflow-hidden bg-zinc-100 dark:bg-zinc-900">
             {displayImage ? (
               <Image
                 src={displayImage}
@@ -135,7 +139,7 @@ export default async function ImageDetailPage({
                       href={assetUrls[size]}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+                      className="text-sm text-zinc-500 transition-opacity hover:opacity-60 dark:text-zinc-400"
                     >
                       {size.charAt(0).toUpperCase() + size.slice(1)} ({size})
                     </a>

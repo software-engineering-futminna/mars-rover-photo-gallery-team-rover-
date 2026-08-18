@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import ImageGrid from "./ImageGrid";
 import type { GalleryImage, RoverFilter } from "@/lib/types";
@@ -53,6 +53,13 @@ export default function SearchView() {
     fetchImages({ ...searchParams, page });
   }, [fetchImages, searchParams]);
 
+  // Dump whatever on first load so the gallery shows something before any search.
+  /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
+  useEffect(() => {
+    fetchImages({ q: "", rover: "curiosity", page: 1 });
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
+
   return (
     <div>
       <SearchBar
@@ -69,31 +76,31 @@ export default function SearchView() {
       />
 
       {results && results.totalHits > 0 && (
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Showing {results.items.length} of {results.totalHits.toLocaleString()} results
+        <div className="mt-8 flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-800">
+          <p className="text-xs text-zinc-400 dark:text-zinc-500">
+            {results.items.length} of {results.totalHits.toLocaleString()}
           </p>
-          
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-4">
             {results.currentPage > 1 && (
               <button
                 onClick={() => handlePageChange(results.currentPage - 1)}
                 disabled={!!loading}
-                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-900 shadow-sm hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+                className="text-sm text-zinc-500 transition-opacity hover:opacity-60 disabled:opacity-30 dark:text-zinc-400"
               >
                 Previous
               </button>
             )}
-            
-            <span className="text-sm text-zinc-600 dark:text-zinc-400">
-              Page {results.currentPage}
+
+            <span className="text-xs text-zinc-400 dark:text-zinc-500">
+              {results.currentPage}
             </span>
-            
+
             {results.nextPage && (
               <button
                 onClick={() => handlePageChange(results.nextPage!)}
                 disabled={!!loading}
-                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-900 shadow-sm hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+                className="text-sm text-zinc-500 transition-opacity hover:opacity-60 disabled:opacity-30 dark:text-zinc-400"
               >
                 Next
               </button>
