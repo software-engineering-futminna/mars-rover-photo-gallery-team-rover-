@@ -5,6 +5,7 @@ import type {
   RoverFilter,
   NasaImageData,
   NasaImageItem,
+  GalleryImage,
 } from "./types";
 
 const BASE = "https://images-api.nasa.gov";
@@ -107,8 +108,29 @@ export function getThumbnailUrl(imageItem: NasaImageItem): string | null {
   return previewLink?.href ?? null;
 }
 
+export function toGalleryImage(imageItem: NasaImageItem): GalleryImage | null {
+  const data = itemData(imageItem);
+  if (!data?.nasa_id || !data.title || !data.date_created) return null;
+
+  return {
+    nasa_id: data.nasa_id,
+    title: data.title,
+    description: data.description,
+    date_created: data.date_created,
+    center: data.center,
+    photographer: data.photographer,
+    keywords: data.keywords,
+    media_type: data.media_type,
+    thumbnail: getThumbnailUrl(imageItem),
+  };
+}
+
+function itemData(imageItem: NasaImageItem): NasaImageData | null {
+  return Array.isArray(imageItem?.data) ? imageItem.data[0] ?? null : null;
+}
+
 export function getImageData(imageItem: NasaImageItem): NasaImageData | null {
-  return imageItem.data[0] ?? null;
+  return itemData(imageItem);
 }
 
 /**

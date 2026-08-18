@@ -1,7 +1,5 @@
 export type RoverName = "curiosity" | "perseverance";
 
-export const ROVERS: RoverName[] = ["curiosity", "perseverance"];
-
 export type RoverFilter = "all" | "curiosity" | "perseverance";
 
 export const ROVER_FILTERS: RoverFilter[] = ["all", "curiosity", "perseverance"];
@@ -59,6 +57,18 @@ export interface NasaImageLink {
 export interface NasaImageItem {
   data: NasaImageData[];
   links?: NasaImageLink[];
+}
+
+export interface GalleryImage {
+  nasa_id: string;
+  title: string;
+  description?: string;
+  date_created: string;
+  center?: string;
+  photographer?: string;
+  keywords?: string[];
+  media_type: MediaType;
+  thumbnail: string | null;
 }
 
 export interface NasaSearchResponse {

@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import type { NasaImageItem } from "@/lib/types";
+import type { GalleryImage } from "@/lib/types";
 
 interface ImageGridProps {
-  images: NasaImageItem[];
+  images: GalleryImage[];
   loading?: boolean;
   error?: string | null;
 }
@@ -39,9 +39,9 @@ export default function ImageGrid({ images, loading, error }: ImageGridProps) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {images.map((item) => {
-        const data = item.data[0];
-        const thumbnail = item.links?.find((l) => l.rel === "preview" && l.render === "image")?.href;
+      {images.map((data) => {
+        if (!data?.nasa_id || !data.title) return null;
+        const thumbnail = data.thumbnail;
         
         return (
           <Link
