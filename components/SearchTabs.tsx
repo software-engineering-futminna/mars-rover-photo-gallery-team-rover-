@@ -1,15 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import RoverSelector from "./RoverSelector";
+import { ROVERS, type RoverName } from "@/lib/types";
 
 type Tab = "manifest" | "search";
 
 interface SearchTabsProps {
-  manifestContent: React.ReactNode;
   searchContent: React.ReactNode;
+  rover: RoverName;
+  onRoverChange: (rover: RoverName) => void;
+  loading: boolean;
 }
 
-export default function SearchTabs({ manifestContent, searchContent }: SearchTabsProps) {
+const ROVER_LABELS: Record<RoverName, string> = {
+  curiosity: "Curiosity",
+  perseverance: "Perseverance",
+};
+
+export default function SearchTabs({ searchContent, rover, onRoverChange, loading }: SearchTabsProps) {
   const [activeTab, setActiveTab] = useState<Tab>("manifest");
 
   return (
@@ -44,7 +53,15 @@ export default function SearchTabs({ manifestContent, searchContent }: SearchTab
       </div>
 
       <div role="tabpanel" aria-labelledby="manifest-tab">
-        {activeTab === "manifest" && manifestContent}
+        {activeTab === "manifest" && (
+          <section className="mb-6 flex flex-wrap items-end gap-4">
+            <RoverSelector
+              value={rover}
+              onChange={onRoverChange}
+              disabled={loading}
+            />
+          </section>
+        )}
         {activeTab === "search" && searchContent}
       </div>
     </div>

@@ -93,3 +93,17 @@ export interface NasaImageDetail {
   thumbnail: string | null;
   assetUrls: Record<string, string>;
 }
+
+export interface RoverOverviewImage {
+  nasa_id: string;
+  title: string;
+  date_created: string;
+  center?: string;
+  thumbnail: string | null;
+}
+
+export interface RoverOverviewResponse {
+  rover: RoverName;
+  totalImages: number;
+  items: RoverOverviewImage[];
+}

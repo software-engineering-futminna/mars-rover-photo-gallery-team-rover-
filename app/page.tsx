@@ -15,7 +15,11 @@ const ROVER_LABELS: Record<RoverName, string> = {
 export default function Home() {
   const [rover, setRover] = useState<RoverName>("curiosity");
   const [overview, setOverview] = useState<RoverOverviewResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  // `loading` reflects a client-only fetch (see useEffect), so it must start
+  // `false`. Initializing it to `true` would make the client render the select
+  // as `disabled` while the server (or absent SSR HTML) renders no `disabled`
+  // attribute, causing a hydration mismatch.
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -59,18 +63,8 @@ export default function Home() {
 
   const manifestContent = (
     <>
-      <section className="mb-6 flex flex-wrap items-end gap-4">
-        <RoverSelector
-          value={rover}
-          onChange={handleRoverChange}
-          disabled={!!loading}
-        />
-      </section>
-
-      <section className="mb-6 rounded-lg border border-zinc-200 bg-white p-4 text-sm dark:border-zinc-800 dark:bg-zinc-900">
-        {loading && <p className="text-zinc-500">Loading rover data…</p>}
-        {error && <p className="text-red-600">{error}</p>}
-        {overview && !loading && (
+      {overview && !loading && (
+        <section className="mb-6 rounded-lg border border-zinc-200 bg-white p-4 text-sm dark:border-zinc-800 dark:bg-zinc-900">
           <dl className="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3">
             <div>
               <dt className="font-medium text-zinc-500">Rover</dt>
@@ -89,8 +83,8 @@ export default function Home() {
               <dd className="text-zinc-900 dark:text-zinc-100">NASA Image Library</dd>
             </div>
           </dl>
-        )}
-      </section>
+        </section>
+      )}
 
       {overview && !loading && (
         <>
@@ -115,8 +109,10 @@ export default function Home() {
       </header>
 
       <SearchTabs
-        manifestContent={manifestContent}
         searchContent={<SearchView />}
+        rover={rover}
+        onRoverChange={handleRoverChange}
+        loading={loading}
       />
     </main>
   );
