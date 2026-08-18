@@ -128,15 +128,13 @@ bun run start
 .
 ├── app/                      # Next.js App Router
 │   ├── api/
-│   │   ├── manifest/route.ts # Rover overview (count + recent images)
 │   │   └── search/route.ts   # Image search endpoint
 │   ├── image/[nasaId]/page.tsx # Single-image detail page
 │   ├── layout.tsx            # Root layout
-│   ├── page.tsx              # Home page (rover gallery + search)
+│   ├── page.tsx              # Home page (rover image search)
 │   └── globals.css           # Global styles (Tailwind)
 ├── components/               # UI components
 │   ├── ImageGrid.tsx
-│   ├── RoverSelector.tsx
 │   ├── SearchBar.tsx
 │   ├── SearchTabs.tsx
 │   └── SearchView.tsx
@@ -155,30 +153,7 @@ bun run start
 
 ## API Routes
 
-Both routes are Route Handlers under `app/api`. They proxy NASA's API and reshape the response for the frontend.
-
-### `GET /api/manifest?rover=<rover>`
-
-Returns an overview for a rover.
-
-- **Query params:** `rover` — `curiosity` (default) or `perseverance`.
-- **Response:**
-  ```json
-  {
-    "rover": "curiosity",
-    "totalImages": 12345,
-    "items": [
-      {
-        "nasa_id": "...",
-        "title": "...",
-        "date_created": "...",
-        "center": "...",
-        "thumbnail": "https://..."
-      }
-    ]
-  }
-  ```
-- **Errors:** `400` for unknown rover; `502` if NASA is unreachable.
+This route is a Route Handler under `app/api`. It proxies NASA's API and reshapes the response for the frontend.
 
 ### `GET /api/search?rover=<rover>&q=<query>&...`
 
@@ -195,10 +170,10 @@ Searches NASA images, scoped to the selected rover.
 The user-facing features use **NASA's Images and Video Library API** (`https://images-api.nasa.gov`), which is free and requires no authentication.
 
 - `lib/nasa-images.ts` builds search/asset/metadata URLs and calls:
-  - `GET /search` — list images matching a query (used for both the rover overview and search).
+  - `GET /search` — list images matching a query (used for image search).
   - `GET /asset/{nasa_id}` — available size URLs for a single image.
   - `GET /metadata/{nasa_id}` — image metadata.
-- The legacy Mars Photos `manifests` API (`api.nasa.gov/mars-photos`, used in `lib/nasa.ts`) was **archived by NASA**, so the app derives rover stats (total image count + recent images) from image search instead. `lib/nasa.ts` is kept for reference but is not used by the running app.
+- The legacy Mars Photos `manifests` API (`api.nasa.gov/mars-photos`, used in `lib/nasa.ts`) was **archived by NASA**. `lib/nasa.ts` is kept for reference but is not used by the running app.
 - Responses from NASA are cached with `next: { revalidate: 3600 }` (1-hour ISR) and route-level `revalidate = 3600` to reduce external calls.
 - Remote images are served from `images-assets.nasa.gov`, which is allow-listed in `next.config.ts` under `images.remotePatterns`.
 

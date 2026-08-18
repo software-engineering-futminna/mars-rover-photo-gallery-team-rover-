@@ -3,7 +3,6 @@ import type {
   NasaSearchResponse,
   NasaAssetResponse,
   RoverFilter,
-  RoverName,
   NasaImageData,
   NasaImageItem,
   GalleryImage,
@@ -132,27 +131,6 @@ function itemData(imageItem: NasaImageItem): NasaImageData | null {
 
 export function getImageData(imageItem: NasaImageItem): NasaImageData | null {
   return itemData(imageItem);
-}
-
-export interface RoverOverview {
-  rover: RoverName;
-  totalImages: number;
-  items: NasaImageItem[];
-}
-
-/**
- * Aggregate rover info from the NASA Image and Video Library API.
- * The legacy Mars Photos manifest API was archived by NASA, so we derive
- * an overview (total image count + recent images) from image search instead.
- */
-export async function getRoverOverview(rover: RoverName): Promise<RoverOverview> {
-  const q = buildRoverQuery(rover, "");
-  const res = await searchImages({ q, media_type: "image", page_size: 8 });
-  return {
-    rover,
-    totalImages: res.collection.metadata.total_hits,
-    items: res.collection.items,
-  };
 }
 
 /**

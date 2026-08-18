@@ -1,7 +1,5 @@
 export type RoverName = "curiosity" | "perseverance";
 
-export const ROVERS: RoverName[] = ["curiosity", "perseverance"];
-
 export type RoverFilter = "all" | "curiosity" | "perseverance";
 
 export const ROVER_FILTERS: RoverFilter[] = ["all", "curiosity", "perseverance"];
@@ -104,18 +102,4 @@ export interface NasaImageDetail {
   data: NasaImageData;
   thumbnail: string | null;
   assetUrls: Record<string, string>;
-}
-
-export interface RoverOverviewImage {
-  nasa_id: string;
-  title: string;
-  date_created: string;
-  center?: string;
-  thumbnail: string | null;
-}
-
-export interface RoverOverviewResponse {
-  rover: RoverName;
-  totalImages: number;
-  items: RoverOverviewImage[];
 }
